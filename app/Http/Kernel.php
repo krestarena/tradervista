@@ -77,6 +77,7 @@ class Kernel extends HttpKernel
         'seller' => IsSeller::class,
         'customer' => IsCustomer::class,
         'user' => IsUser::class,
+        'merchant' => \App\Http\Middleware\IsMerchant::class,
         'unbanned' => IsUnbanned::class,
         'checkout' => CheckoutMiddleware::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
