@@ -7,6 +7,21 @@ This document enumerates each requested TradeVista capability, highlights whethe
 - **Idempotent flows:** preserve current payment, voucher, and redemption logic; new toggles must be paired with functional tests before enabling in production.
 - **Compliance wording:** the UI should reference "Payment Protection" and avoid "escrow". Keep the badge toggle (`TRADEVISTA_PAYMENT_PROTECTION_BADGE_ENABLED`) off until copy is reviewed.
 
+### Baseline toggle defaults for the “basic” multivendor experience
+| Feature area | Default | Notes |
+| --- | --- | --- |
+| Voucher wallet | Enabled | Existing checkout/wallet behaviour remains intact. |
+| Payment Protection window + dispute timer | Enabled (5 days / 48 hours) | These protect payouts without altering cart or payment methods. |
+| Own-dispatch, modal, immediate payout | Disabled | Operators can opt-in after validating payouts/comms. |
+| Payment Protection badge copy | Disabled | Prevents new wording from appearing until approved. |
+| Click & Collect, dispatcher selection | Disabled | Avoids surfacing new shipping choices until configured. |
+| Voucher redemption portal & merchant statements | Disabled | Keeps merchant portal dormant until partner rollout. |
+| Referral reward accrual (buyer & seller) | Disabled | Rewards can be turned on once commission math is validated. |
+| KYC enforcement (vendor/dispatcher/buyer/admin approval) | Disabled | Prevents accidental blocking of onboarding in the basic footprint. |
+| Commission matrix/promotions modifiers | Disabled | Legacy commission remains untouched. |
+| Voucher checkout usage & notifications | Disabled | Voucher ledger stays available but not consumed at checkout unless enabled. |
+| Dispute evidence uploads & timeline notes | Disabled | Core dispute timer remains; evidence features are opt-in. |
+
 ## Buyer stories
 - **B1 Registration & verification:** Keep existing OTP onboarding. Set `TRADEVISTA_KYC_BUYER_VERIFICATION_REQUIRED=true` to mandate OTP/ID verification before checkout. Referral links remain unchanged; no code removal required.
 - **B2 Voucher wallet:** Already enabled by default. Operators can disable globally with `TRADEVISTA_VOUCHER_WALLET_ENABLED=false` or limit checkout usage via `TRADEVISTA_VOUCHER_CHECKOUT_USAGE_ENABLED`.
