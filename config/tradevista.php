@@ -5,6 +5,8 @@ return [
     'voucher_wallet_enabled' => env('TRADEVISTA_VOUCHER_WALLET_ENABLED', true),
     'payment_protection_window_days' => env('TRADEVISTA_PAYMENT_PROTECTION_WINDOW_DAYS', 5),
     'dispute_window_hours' => env('TRADEVISTA_DISPUTE_WINDOW_HOURS', 48),
+    'otp_expiry_minutes' => env('TRADEVISTA_OTP_EXPIRY_MINUTES', 10),
+    'otp_daily_limit' => env('TRADEVISTA_OTP_DAILY_LIMIT', 5),
 
     // Optional behaviours default to disabled so operators can opt-in per the TradeVista plan.
     'own_dispatch_option_enabled' => env('TRADEVISTA_OWN_DISPATCH_ENABLED', false),
