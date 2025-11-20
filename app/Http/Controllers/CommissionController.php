@@ -117,6 +117,15 @@ class CommissionController extends Controller
             if ($seller != null) {
                 $seller = $seller->fresh();
                 $commission_percentage = 0;
+                $commissionPlanId = null;
+
+                if (config('tradevista.commission.category_matrix_enabled')) {
+                    $category = optional($orderDetail->product)->main_category;
+                    if ($category && ($plan = $category->activeCommissionPlan())) {
+                        $commission_percentage = $plan->percentage;
+                        $commissionPlanId = $plan->id;
+                    }
+                }
                 // getting commission percentage
                 if(get_setting('vendor_commission_activation')){
                     if(get_setting('seller_commission_type') == 'fixed_rate'){
@@ -147,6 +156,7 @@ class CommissionController extends Controller
 
                     $commission_history = new CommissionHistory;
                     $commission_history->order_id = $order->id;
+                    $commission_history->commission_plan_id = $commissionPlanId;
                     $commission_history->order_detail_id = $orderDetail->id;
                     $commission_history->seller_id = $orderDetail->seller_id;
                     $commission_history->admin_commission = $admin_commission;
