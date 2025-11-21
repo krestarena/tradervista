@@ -32,6 +32,14 @@ return [
         'products' => env('TRADEVISTA_HIGHLIGHT_PRODUCTS', ''),
     ],
 
+    'highlight' => [
+        'enabled' => env('TRADEVISTA_HIGHLIGHT_ENABLED', false),
+        'start_at' => env('TRADEVISTA_HIGHLIGHT_START_AT'),
+        'end_at' => env('TRADEVISTA_HIGHLIGHT_END_AT'),
+        'vendors' => env('TRADEVISTA_HIGHLIGHT_VENDORS', ''),
+        'products' => env('TRADEVISTA_HIGHLIGHT_PRODUCTS', ''),
+    ],
+
     'referral' => [
         'buyer_pct' => env('TRADEVISTA_REFERRAL_BUYER_PCT', 10),
         'seller_pct' => env('TRADEVISTA_REFERRAL_SELLER_PCT', 5),

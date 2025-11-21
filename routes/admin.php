@@ -116,6 +116,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
             Route::get('/', 'edit')->name('edit');
             Route::post('/', 'update')->name('update');
         });
+    Route::get('tradevista/highlights', [HighlightController::class, 'edit'])->name('admin.tradevista.highlights.edit');
+    Route::post('tradevista/highlights', [HighlightController::class, 'update'])->name('admin.tradevista.highlights.update');
     Route::resource('tradevista/commission-plans', CommissionPlanController::class)->names([
         'index' => 'admin.commission-plans.index',
         'create' => 'admin.commission-plans.create',
