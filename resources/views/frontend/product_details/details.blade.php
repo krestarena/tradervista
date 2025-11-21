@@ -1,7 +1,10 @@
 <div class="text-left">
     <!-- Product Name -->
-    <h2 class="mb-4 fs-16 fw-700 text-dark">
-        {{ $detailedProduct->getTranslation('name') }}
+    <h2 class="mb-4 fs-16 fw-700 text-dark d-flex align-items-center">
+        <span class="mr-2">{{ $detailedProduct->getTranslation('name') }}</span>
+        @if(\App\Support\TradeVistaSettings::isProductHighlighted($detailedProduct))
+            <span class="badge badge-inline badge-primary">{{ translate('Highlighted') }}</span>
+        @endif
     </h2>
 
     <div class="row align-items-center mb-3">

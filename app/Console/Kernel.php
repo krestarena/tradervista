@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\ProcessReferralRewards;
 use App\Console\Commands\ReleasePaymentProtectionHolds;
+use App\Console\Commands\TradeVistaExpireSellerPromotions;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -17,6 +18,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         ReleasePaymentProtectionHolds::class,
         ProcessReferralRewards::class,
+        TradeVistaExpireSellerPromotions::class,
     ];
 
     /**
@@ -29,6 +31,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('tradevista:release-payment-protection')->hourly();
         $schedule->command('tradevista:process-referrals')->hourly();
+        $schedule->command('tradevista:expire-seller-promotions')->dailyAt('00:30');
     }
 
     /**

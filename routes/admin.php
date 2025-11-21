@@ -3,6 +3,10 @@
 use App\Http\Controllers\AddonController;
 use App\Http\Controllers\Admin\Report\EarningReportController;
 use App\Http\Controllers\Admin\VendorKycController;
+use App\Http\Controllers\Admin\CommissionPlanController;
+use App\Http\Controllers\Admin\TradeVista\FeatureFlagController;
+use App\Http\Controllers\Admin\TradeVista\HighlightController;
+use App\Http\Controllers\Admin\TradeVista\ReportController as TradeVistaReportController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AizUploadController;
 use App\Http\Controllers\AreaController;
@@ -98,6 +102,32 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         Route::post('/{submission}/approve', 'approve')->name('approve');
         Route::post('/{submission}/reject', 'reject')->name('reject');
     });
+
+    // TradeVista tools
+    // Keep this block when resolving admin.php merge conflicts so TradeVista reporting
+    // and commission-plan management remain available.
+    Route::get('tradevista/feature-flags', [FeatureFlagController::class, 'edit'])->name('admin.tradevista.feature-flags.edit');
+    Route::post('tradevista/feature-flags', [FeatureFlagController::class, 'update'])->name('admin.tradevista.feature-flags.update');
+    Route::get('tradevista/highlights', [HighlightController::class, 'edit'])->name('admin.tradevista.highlights.edit');
+    Route::post('tradevista/highlights', [HighlightController::class, 'update'])->name('admin.tradevista.highlights.update');
+    Route::resource('tradevista/commission-plans', CommissionPlanController::class)->names([
+        'index' => 'admin.commission-plans.index',
+        'create' => 'admin.commission-plans.create',
+        'store' => 'admin.commission-plans.store',
+        'show' => 'admin.commission-plans.show',
+        'edit' => 'admin.commission-plans.edit',
+        'update' => 'admin.commission-plans.update',
+        'destroy' => 'admin.commission-plans.destroy',
+    ]);
+
+    Route::controller(TradeVistaReportController::class)
+        ->prefix('tradevista/reports')
+        ->name('admin.tradevista.reports.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/voucher-liability', 'exportVoucherLiability')->name('voucher-liability');
+            Route::get('/commission-holds', 'exportCommissionHoldQueue')->name('commission-holds');
+        });
     
     // category
     Route::resource('categories', CategoryController::class);
