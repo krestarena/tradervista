@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TradeVistaCard;
 use App\Models\TradeVistaCardTransaction;
 use App\Services\TradeVista\TradeVistaCardService;
+use App\Support\TradeVistaSettings;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -16,6 +17,7 @@ class MerchantPortalController extends Controller
 
     public function index()
     {
+        abort_unless(TradeVistaSettings::bool('voucher_redemption_portal_enabled'), 404);
         abort_unless(config('tradevista.voucher_redemption_portal_enabled'), 404);
 
         $transactions = TradeVistaCardTransaction::with('card')
@@ -29,6 +31,7 @@ class MerchantPortalController extends Controller
 
     public function lookup(Request $request)
     {
+        abort_unless(TradeVistaSettings::bool('voucher_redemption_portal_enabled'), 404);
         abort_unless(config('tradevista.voucher_redemption_portal_enabled'), 404);
 
         $request->validate([
@@ -51,6 +54,7 @@ class MerchantPortalController extends Controller
 
     public function redeem(Request $request)
     {
+        abort_unless(TradeVistaSettings::bool('voucher_redemption_portal_enabled'), 404);
         abort_unless(config('tradevista.voucher_redemption_portal_enabled'), 404);
 
         $data = $request->validate([
@@ -75,6 +79,7 @@ class MerchantPortalController extends Controller
 
     public function export(Request $request): StreamedResponse
     {
+        abort_unless(TradeVistaSettings::bool('voucher_redemption_portal_enabled'), 404);
         abort_unless(config('tradevista.voucher_redemption_portal_enabled'), 404);
 
         $transactions = TradeVistaCardTransaction::with('card')

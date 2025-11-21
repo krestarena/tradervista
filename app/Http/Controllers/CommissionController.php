@@ -8,6 +8,7 @@ use App\Models\SellerWithdrawRequest;
 use App\Models\Payment;
 use App\Models\Shop;
 use App\Models\User;
+use App\Support\TradeVistaSettings;
 use Session;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\PayoutNotification;
@@ -119,6 +120,7 @@ class CommissionController extends Controller
                 $commission_percentage = 0;
                 $commissionPlanId = null;
 
+                if (TradeVistaSettings::bool('commission.category_matrix_enabled')) {
                 if (config('tradevista.commission.category_matrix_enabled')) {
                     $category = optional($orderDetail->product)->main_category;
                     if ($category && ($plan = $category->activeCommissionPlan())) {

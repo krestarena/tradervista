@@ -3,6 +3,7 @@
 namespace App\Services\TradeVista;
 
 use App\Models\Order;
+use App\Support\TradeVistaSettings;
 use Carbon\Carbon;
 
 class ClickAndCollectService
@@ -27,7 +28,7 @@ class ClickAndCollectService
 
     protected function eligible(Order $order): bool
     {
-        if (!config('tradevista.click_and_collect.enabled', true)) {
+        if (!TradeVistaSettings::bool('click_and_collect.enabled', true)) {
             return false;
         }
 
@@ -66,7 +67,7 @@ class ClickAndCollectService
         $hours = (int) $input;
 
         if ($hours <= 0) {
-            $hours = (int) config('tradevista.click_and_collect.default_window_hours', 48);
+            $hours = TradeVistaSettings::int('click_and_collect.default_window_hours', 48);
         }
 
         return max($hours, 1);
