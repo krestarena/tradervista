@@ -14,6 +14,7 @@ use App\Models\CombinedOrder;
 use App\Models\Country;
 use App\Models\Product;
 use App\Models\User;
+use App\Support\TradeVistaSettings;
 use App\Services\TradeVista\VoucherWalletService;
 use App\Utility\EmailUtility;
 use App\Utility\NotificationUtility;
@@ -124,7 +125,7 @@ class CheckoutController extends Controller
             }
             $total = $subtotal + $tax + $shipping;
 
-            if (auth()->check() && config('tradevista.voucher_wallet_enabled')) {
+            if (auth()->check() && TradeVistaSettings::bool('voucher_wallet_enabled')) {
                 $voucherContext = $this->voucherWalletService->getCheckoutContext($request->user(), $total);
             }
 
@@ -313,7 +314,7 @@ class CheckoutController extends Controller
             // Calculate Commission from seller, Customer Affiliate earning and Customers Club Point
             calculateCommissionAffilationClubPoint($order);
         }
-        if (config('tradevista.voucher_wallet_enabled')) {
+        if (TradeVistaSettings::bool('voucher_wallet_enabled')) {
             $this->voucherWalletService->finalizeForCombinedOrder($combined_order);
         }
         Session::forget('tradevista_own_dispatch');
@@ -337,7 +338,7 @@ class CheckoutController extends Controller
             // Calculate Commission from seller, Customer Affiliate earning and Customers Club Point
             calculateCommissionAffilationClubPoint($order);
         }
-        if (config('tradevista.voucher_wallet_enabled')) {
+        if (TradeVistaSettings::bool('voucher_wallet_enabled')) {
             $this->voucherWalletService->finalizeForCombinedOrder($combined_order);
         }
         Session::forget('tradevista_own_dispatch');
@@ -526,7 +527,7 @@ class CheckoutController extends Controller
             }
             $total = $subtotal + $tax + $shipping;
             $voucherContext = null;
-            if ($authUser && config('tradevista.voucher_wallet_enabled')) {
+            if ($authUser && TradeVistaSettings::bool('voucher_wallet_enabled')) {
                 $voucherContext = $this->voucherWalletService->getCheckoutContext($authUser, $total);
             }
 
@@ -545,6 +546,8 @@ class CheckoutController extends Controller
         $coupon     = Coupon::where('code', $request->code)->first();
         $proceed    = $request->proceed;
         $response_message = array();
+
+        $userCoupon = null;
 
         // if the Coupon type is Welcome base, check the user has this coupon or not
         $canUseCoupon = true;
@@ -588,22 +591,62 @@ class CheckoutController extends Controller
                         $tax = 0;
                         $shipping = 0;
                         foreach ($user_carts as $key => $cartItem) {
-            if ($shipping_type === 'dispatcher') {
-                $cartItem['shipping_type'] = 'dispatcher';
-                $cartItem['dispatcher_id'] = $request->type_id;
-                $cartItem['shipping_cost'] = $this->dispatcherService->quote((int) $request->type_id);
-            } elseif ($shipping_type != 'carrier' || $shipping_type == 'pickup_point') {
-                if ($shipping_type == 'pickup_point') {
-                    $cartItem['shipping_type'] = 'pickup_point';
-                    $cartItem['pickup_point'] = $request->type_id;
+                            $product = Product::find($cartItem['product_id']);
+                            $subtotal += cart_product_price($cartItem, $product, false, false) * $cartItem['quantity'];
+                            $tax += cart_product_tax($cartItem, $product, false) * $cartItem['quantity'];
+                            $shipping += $cartItem['shipping_cost'] ?? $cartItem['shipping'] ?? 0;
+                        }
+
+                        $sum = $subtotal + $tax + $shipping;
+
+                        if ($sum >= $coupon_details->min_buy) {
+                            if ($coupon->discount_type == 'percent') {
+                                $coupon_discount = ($sum * $coupon->discount) / 100;
+                                if ($coupon_discount > $coupon_details->max_discount) {
+                                    $coupon_discount = $coupon_details->max_discount;
+                                }
+                            } elseif ($coupon->discount_type == 'amount') {
+                                $coupon_discount = $coupon->discount;
+                            }
+                        }
+                    } elseif ($coupon->type == 'product_base') {
+                        foreach ($user_carts as $key => $cartItem) {
+                            $product = Product::find($cartItem['product_id']);
+                            foreach ($coupon_details as $coupon_detail) {
+                                if ($coupon_detail->product_id == $cartItem['product_id']) {
+                                    if ($coupon->discount_type == 'percent') {
+                                        $coupon_discount += cart_product_price($cartItem, $product, false, false) * $coupon->discount / 100;
+                                    } elseif ($coupon->discount_type == 'amount') {
+                                        $coupon_discount += $coupon->discount;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if ($coupon_discount > 0) {
+                        $cart_query = $user != null ? Cart::where('user_id', $user->id) : Cart::where('temp_user_id', $temp_user);
+                        $cart_query->where('owner_id', $coupon->user_id)->active()->update([
+                            'discount' => $coupon_discount / max(count($user_carts), 1),
+                            'coupon_code' => $request->code,
+                            'coupon_applied' => 1
+                        ]);
+
+                        if ($coupon->type == 'welcome_base' && $userCoupon) {
+                            $userCoupon->status = 'used';
+                            $userCoupon->save();
+                        }
+
+                        $response_message['response'] = 'success';
+                        $response_message['message'] = translate('Coupon Applied');
+                    } else {
+                        $response_message['response'] = 'danger';
+                        $response_message['message'] = translate('This coupon is not applicable to your cart products!');
+                    }
                 } else {
-                    $cartItem['shipping_type'] = 'home_delivery';
+                    $response_message['response'] = 'warning';
+                    $response_message['message'] = translate('You already used this coupon!');
                 }
-                $cartItem['shipping_cost'] = 0;
-                if ($cartItem['shipping_type'] == 'home_delivery') {
-                    $cartItem['shipping_cost'] = getShippingCost($carts, $key, $shipping_info);
-                }
-                $cartItem['dispatcher_id'] = null;
             } else {
                 $response_message['response'] = 'warning';
                 $response_message['message'] = translate('Coupon expired!');
@@ -758,9 +801,18 @@ class CheckoutController extends Controller
             if (count($carrier_list) > 1) {
                 $default_carrier_id = $carrier_list->toQuery()->first()->id;
             }
+        }
+
+        foreach ($carts as $key => $cartItem) {
+            $cartItem['shipping_type'] = $default_shipping_type;
+            if ($default_shipping_type == 'carrier') {
+                $cartItem['carrier_id'] = $default_carrier_id;
+                $cartItem['shipping_cost'] = getShippingCost($carts, $key, $shipping_info, $default_carrier_id);
+            } else {
+                $cartItem['shipping_cost'] = getShippingCost($carts, $key, $shipping_info);
+            }
 
             $cartItem->save();
-        }
         }
 
         $carts = $carts->fresh();

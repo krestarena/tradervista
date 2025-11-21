@@ -6,6 +6,7 @@ use App\Models\CommissionHistory;
 use App\Models\Order;
 use App\Models\ReferralRewardJob;
 use App\Models\User;
+use App\Support\TradeVistaSettings;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -107,7 +108,7 @@ class ReferralRewardService
             return;
         }
 
-        $buyerPct = (float) config('tradevista.referral.buyer_pct', 10);
+        $buyerPct = TradeVistaSettings::float('referral.buyer_pct', 10);
         if ($buyerPct <= 0) {
             return;
         }
@@ -136,7 +137,7 @@ class ReferralRewardService
             return;
         }
 
-        $sellerPct = (float) config('tradevista.referral.seller_pct', 5);
+        $sellerPct = TradeVistaSettings::float('referral.seller_pct', 5);
         if ($sellerPct <= 0) {
             return;
         }
@@ -206,7 +207,7 @@ class ReferralRewardService
             return Carbon::parse($order->payment_protection_hold_expires_at);
         }
 
-        $windowDays = (int) config('tradevista.payment_protection_window_days', 5);
+        $windowDays = TradeVistaSettings::int('payment_protection_window_days', 5);
         return Carbon::now()->addDays(max($windowDays, 0));
     }
 
@@ -221,7 +222,7 @@ class ReferralRewardService
             return false;
         }
 
-        $minOrder = (float) config('tradevista.referral.min_order', 10000);
+        $minOrder = TradeVistaSettings::float('referral.min_order', 10000);
         return (float) $order->grand_total >= $minOrder;
     }
 }

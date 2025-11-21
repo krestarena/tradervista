@@ -6,6 +6,7 @@ use App\Models\Dispute;
 use App\Models\Order;
 use App\Models\User;
 use App\Utility\NotificationUtility;
+use App\Support\TradeVistaSettings;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -39,7 +40,7 @@ class DisputeService
         return [
             'can_open' => $this->canOpen($order),
             'deadline' => $this->deadline($order),
-            'window_hours' => (int) config('tradevista.dispute_window_hours', 48),
+            'window_hours' => TradeVistaSettings::int('dispute_window_hours', 48),
         ];
     }
 
@@ -125,7 +126,7 @@ class DisputeService
 
     protected function deadline(Order $order): ?Carbon
     {
-        $windowHours = (int) config('tradevista.dispute_window_hours', 48);
+        $windowHours = TradeVistaSettings::int('dispute_window_hours', 48);
         $deliveredAt = $order->delivered_date ? Carbon::parse($order->delivered_date) : ($this->hasDelivered($order) ? Carbon::parse($order->updated_at) : null);
         if (!$deliveredAt) {
             return null;

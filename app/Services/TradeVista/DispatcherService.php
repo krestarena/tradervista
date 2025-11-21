@@ -5,12 +5,13 @@ namespace App\Services\TradeVista;
 use App\Models\DeliveryBoy;
 use App\Models\User;
 use Illuminate\Support\Collection;
+use App\Support\TradeVistaSettings;
 
 class DispatcherService
 {
     public function documentTypes(): array
     {
-        return config('tradevista.dispatcher.document_types', []);
+        return TradeVistaSettings::get('dispatcher.document_types', []);
     }
 
     public function dispatcherRate(?DeliveryBoy $profile): float
@@ -19,7 +20,7 @@ class DispatcherService
             return (float) $profile->default_rate;
         }
 
-        return (float) config('tradevista.dispatcher.default_rate', 0);
+        return TradeVistaSettings::float('dispatcher.default_rate', 0);
     }
 
     public function dispatcherEtaHours(?DeliveryBoy $profile): int
@@ -28,12 +29,12 @@ class DispatcherService
             return (int) $profile->default_eta_hours;
         }
 
-        return (int) config('tradevista.dispatcher.default_eta_hours', 48);
+        return TradeVistaSettings::int('dispatcher.default_eta_hours', 48);
     }
 
     public function getAvailableDispatchers(?int $cityId): Collection
     {
-        if (!$cityId || !config('tradevista.dispatcher.enabled')) {
+        if (!$cityId || !TradeVistaSettings::bool('dispatcher.enabled')) {
             return collect();
         }
 

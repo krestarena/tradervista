@@ -102,7 +102,7 @@
                 </label>
             </div>
             @endif
-            @if (config('tradevista.own_dispatch_option_enabled'))
+            @if (\App\Support\TradeVistaSettings::bool('own_dispatch_option_enabled'))
             <div class="col-12 mt-3">
                 <label class="aiz-megabox d-block bg-white mb-0">
                     <input

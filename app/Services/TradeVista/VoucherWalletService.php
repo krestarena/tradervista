@@ -6,6 +6,7 @@ use App\Models\CombinedOrder;
 use App\Models\VoucherWallet;
 use App\Models\VoucherWalletLedger;
 use App\Models\User;
+use App\Support\TradeVistaSettings;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class VoucherWalletService
 
     public function getCheckoutContext(?User $user, float $cartTotal): array
     {
-        if (!$user || !config('tradevista.voucher_wallet_enabled')) {
+        if (!$user || !TradeVistaSettings::bool('voucher_wallet_enabled')) {
             return [
                 'enabled' => false,
                 'balance' => 0,
@@ -45,7 +46,7 @@ class VoucherWalletService
 
     public function reserveForCheckout(User $user, float $amount, float $cartTotal): array
     {
-        if (!config('tradevista.voucher_wallet_enabled')) {
+        if (!TradeVistaSettings::bool('voucher_wallet_enabled')) {
             throw new RuntimeException(translate('Voucher wallet is disabled.'));
         }
 

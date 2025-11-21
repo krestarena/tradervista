@@ -180,7 +180,7 @@
                 <div class="form-group row">
                     <label class="col-sm-2 col-from-label">{{ translate('ETA (hours)') }} <span class="text-danger">*</span></label>
                     <div class="col-sm-10">
-                        <input type="number" min="1" class="form-control" name="default_eta_hours" value="{{ old('default_eta_hours', config('tradevista.dispatcher.default_eta_hours')) }}" required>
+                        <input type="number" min="1" class="form-control" name="default_eta_hours" value="{{ old('default_eta_hours', \App\Support\TradeVistaSettings::int('dispatcher.default_eta_hours')) }}" required>
                     </div>
                 </div>
 
