@@ -37,4 +37,8 @@ Steps to resolve:
    php -l routes/admin.php
    ```
 
+If your editor offers "Accept current/incoming/both" options, pick **Accept
+both changes** so the TradeVista import and route block stay alongside the
+existing admin routes before you clean up the markers and whitespace.
+
 Committing with this merged block will unblock the branch merge.
