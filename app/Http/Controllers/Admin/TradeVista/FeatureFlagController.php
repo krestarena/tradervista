@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BusinessSetting;
 use App\Support\TradeVistaSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class FeatureFlagController extends Controller
 {
@@ -64,6 +65,8 @@ class FeatureFlagController extends Controller
                 ['value' => $definition['type'] === 'boolean' ? (int) (bool) $value : $value]
             );
         }
+
+        Cache::forget('business_settings');
 
         flash(translate('TradeVista feature flags updated.'))->success();
 
