@@ -96,7 +96,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         Route::get('/cybersource-configuration', 'configuration')->name('cybersource_configuration');
     });
 
-    Route::controller(VendorKycController::class)->prefix('vendor-kyc')->name('vendor-kyc.')->group(function () {
+    Route::controller(VendorKycController::class)->prefix('vendor-kyc')->name('admin.vendor-kyc.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/{submission}', 'show')->name('show');
         Route::post('/{submission}/approve', 'approve')->name('approve');
@@ -108,6 +108,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
     // and commission-plan management remain available.
     Route::get('tradevista/feature-flags', [FeatureFlagController::class, 'edit'])->name('admin.tradevista.feature-flags.edit');
     Route::post('tradevista/feature-flags', [FeatureFlagController::class, 'update'])->name('admin.tradevista.feature-flags.update');
+
+    Route::controller(HighlightController::class)
+        ->prefix('tradevista/highlights')
+        ->name('admin.tradevista.highlights.')
+        ->group(function () {
+            Route::get('/', 'edit')->name('edit');
+            Route::post('/', 'update')->name('update');
+        });
     Route::get('tradevista/highlights', [HighlightController::class, 'edit'])->name('admin.tradevista.highlights.edit');
     Route::post('tradevista/highlights', [HighlightController::class, 'update'])->name('admin.tradevista.highlights.update');
     Route::resource('tradevista/commission-plans', CommissionPlanController::class)->names([
