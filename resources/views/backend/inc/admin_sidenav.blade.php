@@ -1124,6 +1124,11 @@
                             </a>
                         </li>
                         @endcan
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('admin.tradevista.reports.index') }}" class="aiz-side-nav-link">
+                                <span class="aiz-side-nav-text">{{ translate('TradeVista Operations') }}</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 @endcanany

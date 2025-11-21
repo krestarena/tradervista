@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dispute extends Model
 {
+    public const STATUS_OPEN = 'open';
+    public const STATUS_UNDER_REVIEW = 'under_review';
+    public const STATUS_RESOLVED = 'resolved';
+
     protected $guarded = [];
 
     protected $casts = [
