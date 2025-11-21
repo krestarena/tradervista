@@ -4,6 +4,7 @@ use App\Http\Controllers\AddonController;
 use App\Http\Controllers\Admin\Report\EarningReportController;
 use App\Http\Controllers\Admin\VendorKycController;
 use App\Http\Controllers\Admin\CommissionPlanController;
+use App\Http\Controllers\Admin\TradeVista\ReportController as TradeVistaReportController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AizUploadController;
 use App\Http\Controllers\AreaController;
@@ -100,6 +101,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         Route::post('/{submission}/reject', 'reject')->name('reject');
     });
 
+    // TradeVista tools
+    // Keep this block when resolving admin.php merge conflicts so TradeVista reporting
+    // and commission-plan management remain available.
     Route::resource('tradevista/commission-plans', CommissionPlanController::class)->names([
         'index' => 'admin.commission-plans.index',
         'create' => 'admin.commission-plans.create',
@@ -109,6 +113,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         'update' => 'admin.commission-plans.update',
         'destroy' => 'admin.commission-plans.destroy',
     ]);
+
+    Route::controller(TradeVistaReportController::class)
+        ->prefix('tradevista/reports')
+        ->name('admin.tradevista.reports.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/voucher-liability', 'exportVoucherLiability')->name('voucher-liability');
+            Route::get('/commission-holds', 'exportCommissionHoldQueue')->name('commission-holds');
+        });
     
     // category
     Route::resource('categories', CategoryController::class);
