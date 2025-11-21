@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Report\EarningReportController;
 use App\Http\Controllers\Admin\VendorKycController;
 use App\Http\Controllers\Admin\CommissionPlanController;
 use App\Http\Controllers\Admin\TradeVista\FeatureFlagController;
+use App\Http\Controllers\Admin\TradeVista\HighlightController;
 use App\Http\Controllers\Admin\TradeVista\ReportController as TradeVistaReportController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AizUploadController;
@@ -107,6 +108,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
     // and commission-plan management remain available.
     Route::get('tradevista/feature-flags', [FeatureFlagController::class, 'edit'])->name('admin.tradevista.feature-flags.edit');
     Route::post('tradevista/feature-flags', [FeatureFlagController::class, 'update'])->name('admin.tradevista.feature-flags.update');
+    Route::get('tradevista/highlights', [HighlightController::class, 'edit'])->name('admin.tradevista.highlights.edit');
+    Route::post('tradevista/highlights', [HighlightController::class, 'update'])->name('admin.tradevista.highlights.update');
     Route::resource('tradevista/commission-plans', CommissionPlanController::class)->names([
         'index' => 'admin.commission-plans.index',
         'create' => 'admin.commission-plans.create',

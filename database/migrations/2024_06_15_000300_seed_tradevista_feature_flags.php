@@ -23,6 +23,11 @@ return new class extends Migration {
             'tradevista_commission_statement_exports_enabled' => config('tradevista.commission_statement_exports_enabled'),
             'tradevista_audit_logging_enabled' => config('tradevista.audit_logging_enabled'),
             'tradevista_weekly_settlement_enabled' => config('tradevista.weekly_settlement_enabled'),
+            'tradevista_highlight_enabled' => config('tradevista.highlight.enabled'),
+            'tradevista_highlight_start_at' => config('tradevista.highlight.start_at'),
+            'tradevista_highlight_end_at' => config('tradevista.highlight.end_at'),
+            'tradevista_highlight_vendors' => config('tradevista.highlight.vendors'),
+            'tradevista_highlight_products' => config('tradevista.highlight.products'),
         ];
 
         foreach ($settings as $type => $value) {
@@ -52,6 +57,11 @@ return new class extends Migration {
             'tradevista_commission_statement_exports_enabled',
             'tradevista_audit_logging_enabled',
             'tradevista_weekly_settlement_enabled',
+            'tradevista_highlight_enabled',
+            'tradevista_highlight_start_at',
+            'tradevista_highlight_end_at',
+            'tradevista_highlight_vendors',
+            'tradevista_highlight_products',
         ])->delete();
     }
 };
