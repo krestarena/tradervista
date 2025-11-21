@@ -65,7 +65,7 @@
                 @if ($order->shipping_type === 'pickup_point')
                     @php
                         $pickupReadyValue = optional($order->pickup_ready_at)->format('Y-m-d\TH:i') ?? now()->format('Y-m-d\TH:i');
-                        $pickupWindowHours = $order->pickupWindowHours() ?? config('tradevista.click_and_collect.default_window_hours', 48);
+                        $pickupWindowHours = $order->pickupWindowHours() ?? \App\Support\TradeVistaSettings::int('click_and_collect.default_window_hours', 48);
                     @endphp
                     <div class="col-12 mt-3">
                         <div class="alert alert-soft-primary d-flex flex-column flex-lg-row justify-content-between align-items-start">

@@ -11,7 +11,9 @@ use App\Models\SellerCategory;
 use App\Models\Shop;
 use App\Models\User;
 use App\Models\Wishlist;
+use App\Support\TradeVistaSettings;
 use App\Utility\ProductUtility;
+use Carbon\Carbon;
 use Combinations;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -44,6 +46,25 @@ class ProductService
             $date_var               = explode(" to ", $collection['date_range']);
             $discount_start_date = strtotime($date_var[0]);
             $discount_end_date   = strtotime($date_var[1]);
+        }
+
+        if (TradeVistaSettings::bool('seller_promotions_enabled', false) && ($collection['discount'] ?? 0) > 0) {
+            $now = Carbon::now();
+            $discount_start_date ??= $now->timestamp;
+            $discount_end_date ??= $now->copy()->addDays(TradeVistaSettings::int('seller_promotions_default_window_days', 7))->timestamp;
+
+            if ($discount_end_date <= $discount_start_date) {
+                $discount_end_date = Carbon::createFromTimestamp($discount_start_date)->addDay()->timestamp;
+            }
+
+            if (
+                auth()->check() &&
+                auth()->user()->user_type === 'seller' &&
+                ($collection['discount_type'] ?? null) === 'percent'
+            ) {
+                $maxPercent = TradeVistaSettings::int('seller_promotions_max_discount_pct', 40);
+                $collection['discount'] = min((int) $collection['discount'], $maxPercent);
+            }
         }
         unset($collection['date_range']);
         

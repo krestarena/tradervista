@@ -1124,6 +1124,21 @@
                             </a>
                         </li>
                         @endcan
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('admin.tradevista.feature-flags.edit') }}" class="aiz-side-nav-link">
+                                <span class="aiz-side-nav-text">{{ translate('TradeVista Feature Flags') }}</span>
+                            </a>
+                        </li>
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('admin.tradevista.highlights.edit') }}" class="aiz-side-nav-link">
+                                <span class="aiz-side-nav-text">{{ translate('TradeVista Highlights') }}</span>
+                            </a>
+                        </li>
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('admin.tradevista.reports.index') }}" class="aiz-side-nav-link">
+                                <span class="aiz-side-nav-text">{{ translate('TradeVista Operations') }}</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 @endcanany

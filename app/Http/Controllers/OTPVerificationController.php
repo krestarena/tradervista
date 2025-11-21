@@ -6,6 +6,7 @@ use App\Models\SmsTemplate;
 use App\Models\User;
 use App\Services\SendSmsService;
 use App\Utility\EmailUtility;
+use App\Support\TradeVistaSettings;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -138,7 +139,7 @@ class OTPVerificationController extends Controller
 
         $code = rand(100000, 999999);
         $user->verification_code = $code;
-        $user->otp_expires_at = Carbon::now()->addMinutes((int) config('tradevista.otp_expiry_minutes', 10));
+        $user->otp_expires_at = Carbon::now()->addMinutes(TradeVistaSettings::int('otp_expiry_minutes', 10));
         $user->otp_last_sent_at = Carbon::now();
         $user->otp_daily_count = ($user->otp_daily_count ?? 0) + 1;
         $user->otp_daily_counted_at = Carbon::now()->toDateString();
@@ -218,7 +219,7 @@ class OTPVerificationController extends Controller
 
     protected function enforceDailyLimit(User $user): void
     {
-        $limit = (int) config('tradevista.otp_daily_limit', 5);
+        $limit = TradeVistaSettings::int('otp_daily_limit', 5);
         if ($limit <= 0) {
             return;
         }

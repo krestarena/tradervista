@@ -12,7 +12,7 @@
     @php
         $dispatcherProfile = \App\Models\DeliveryBoy::firstOrNew(['user_id' => Auth::user()->id]);
         $serviceCities = \App\Models\City::where('status', 1)->orderBy('name')->get();
-        $documentTypes = config('tradevista.dispatcher.document_types');
+        $documentTypes = \App\Support\TradeVistaSettings::get('dispatcher.document_types', []);
         $selectedAreas = collect(old('service_area_cities', $dispatcherProfile->service_area_cities ?? []));
     @endphp
 
@@ -167,7 +167,7 @@
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{{ translate('ETA (hours)') }}</label>
                     <div class="col-md-9">
-                        <input type="number" min="1" class="form-control" name="default_eta_hours" value="{{ old('default_eta_hours', $dispatcherProfile->default_eta_hours ?? config('tradevista.dispatcher.default_eta_hours')) }}" required>
+                        <input type="number" min="1" class="form-control" name="default_eta_hours" value="{{ old('default_eta_hours', $dispatcherProfile->default_eta_hours ?? \App\Support\TradeVistaSettings::int('dispatcher.default_eta_hours')) }}" required>
                     </div>
                 </div>
 
