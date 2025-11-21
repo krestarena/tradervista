@@ -17,6 +17,7 @@ use App\Http\Controllers\DemoController;
 use App\Http\Controllers\FollowSellerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\MerchantPortalController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NoteController;
@@ -378,6 +379,16 @@ Route::controller(AddressController::class)->group(function () {
     Route::post('/get-cities', 'getCities')->name('get-city');
     Route::post('/get-area', 'getAreas')->name('get-area');
     Route::post('/get-cities-by-country', 'getCitiesByCountry')->name('get-city-by-country');
+});
+
+Route::group([
+    'prefix' => 'merchant',
+    'middleware' => ['auth', 'merchant'],
+], function () {
+    Route::get('/portal', [MerchantPortalController::class, 'index'])->name('merchant.portal');
+    Route::post('/cards/lookup', [MerchantPortalController::class, 'lookup'])->name('merchant.cards.lookup');
+    Route::post('/cards/redeem', [MerchantPortalController::class, 'redeem'])->name('merchant.cards.redeem');
+    Route::get('/cards/export', [MerchantPortalController::class, 'export'])->name('merchant.cards.export');
 });
 
 Route::group(['middleware' => ['auth']], function () {

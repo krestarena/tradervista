@@ -107,7 +107,7 @@
             </div>
         </div>
     </section>
-    @if (config('tradevista.own_dispatch_modal_enabled'))
+    @if (\App\Support\TradeVistaSettings::bool('own_dispatch_modal_enabled'))
         <div class="modal fade" id="ownDispatchModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content rounded-0">
@@ -443,7 +443,7 @@
             AIZ.plugins.bootstrapSelect("refresh");
         }
 
-        const tradevistaOwnDispatchModalEnabled = @json(config('tradevista.own_dispatch_modal_enabled'));
+        const tradevistaOwnDispatchModalEnabled = @json(\App\Support\TradeVistaSettings::bool('own_dispatch_modal_enabled'));
         let pendingOwnDispatchSelection = null;
         let confirmedOwnDispatchSellers = {};
 

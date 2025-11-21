@@ -15,6 +15,7 @@ use App\Models\DeliveryBoyPayment;
 use App\Models\DeliveryBoyCollection;
 use App\Models\Order;
 use App\Models\User;
+use App\Support\TradeVistaSettings;
 
 
 class DeliveryBoyController extends Controller
@@ -66,7 +67,7 @@ class DeliveryBoyController extends Controller
     public function create()
     {
         $countries = Country::where('status', 1)->get();
-        $documentTypes = config('tradevista.dispatcher.document_types');
+        $documentTypes = TradeVistaSettings::get('dispatcher.document_types', []);
         $serviceCities = City::where('status', 1)->orderBy('name')->get();
 
         return view('backend.delivery_boys.create', compact('countries', 'documentTypes', 'serviceCities'));
@@ -80,7 +81,7 @@ class DeliveryBoyController extends Controller
      */
     public function store(Request $request)
     {
-        $documentTypes = config('tradevista.dispatcher.document_types', []);
+        $documentTypes = TradeVistaSettings::get('dispatcher.document_types', []);
 
         $request->validate([
             'name' => 'required',
@@ -157,7 +158,7 @@ class DeliveryBoyController extends Controller
         $states = State::where('status', 1)->get();
         $cities = City::where('status', 1)->get();
         $serviceCities = City::where('status', 1)->orderBy('name')->get();
-        $documentTypes = config('tradevista.dispatcher.document_types');
+        $documentTypes = TradeVistaSettings::get('dispatcher.document_types', []);
         $delivery_boy = User::with('deliveryBoyProfile')->findOrFail($id);
         $dispatcherProfile = $delivery_boy->deliveryBoyProfile ?? new DeliveryBoy(['user_id' => $delivery_boy->id]);
 
@@ -174,7 +175,7 @@ class DeliveryBoyController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::with('deliveryBoyProfile')->findOrFail($id);
-        $documentTypes = config('tradevista.dispatcher.document_types', []);
+        $documentTypes = TradeVistaSettings::get('dispatcher.document_types', []);
 
         $request->validate([
             'name'       => 'required',
@@ -275,7 +276,7 @@ class DeliveryBoyController extends Controller
         $user = Auth::user();
         abort_if(!$user || $user->user_type !== 'delivery_boy', 403);
 
-        $documentTypes = config('tradevista.dispatcher.document_types', []);
+        $documentTypes = TradeVistaSettings::get('dispatcher.document_types', []);
         $request->validate([
             'kyc_document_type' => ['required', Rule::in($documentTypes)],
             'kyc_document_number' => 'required|string|max:255',
