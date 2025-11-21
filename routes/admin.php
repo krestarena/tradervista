@@ -101,6 +101,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         Route::post('/{submission}/reject', 'reject')->name('reject');
     });
 
+    // TradeVista tools
     Route::resource('tradevista/commission-plans', CommissionPlanController::class)->names([
         'index' => 'admin.commission-plans.index',
         'create' => 'admin.commission-plans.create',
@@ -111,11 +112,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         'destroy' => 'admin.commission-plans.destroy',
     ]);
 
-    Route::controller(TradeVistaReportController::class)->prefix('tradevista/reports')->name('admin.tradevista.reports.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/voucher-liability', 'exportVoucherLiability')->name('voucher-liability');
-        Route::get('/commission-holds', 'exportCommissionHoldQueue')->name('commission-holds');
-    });
+    Route::controller(TradeVistaReportController::class)
+        ->prefix('tradevista/reports')
+        ->name('admin.tradevista.reports.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/voucher-liability', 'exportVoucherLiability')->name('voucher-liability');
+            Route::get('/commission-holds', 'exportCommissionHoldQueue')->name('commission-holds');
+        });
     
     // category
     Route::resource('categories', CategoryController::class);
