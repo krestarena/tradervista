@@ -3,10 +3,13 @@
 namespace App\Utility;
 
 use App\Mail\InvoiceEmailManager;
+use App\Mail\MailManager;
 use App\Models\User;
 use App\Models\SmsTemplate;
 use App\Http\Controllers\OTPVerificationController;
 use App\Models\EmailTemplate;
+use App\Models\TradeVistaCard;
+use App\Models\TradeVistaCardTransaction;
 use Mail;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\OrderNotification;
@@ -95,7 +98,7 @@ class NotificationUtility
     }
 
     public static function sendFirebaseNotification($req)
-    {        
+    {
         $url = 'https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send';
 
         $fields = array
@@ -138,5 +141,26 @@ class NotificationUtility
         $firebase_notification->receiver_id = $req->user_id;
 
         $firebase_notification->save();
+    }
+
+    public static function sendTradeVistaCardRedemption($merchant, TradeVistaCardTransaction $transaction, TradeVistaCard $card)
+    {
+        if (!$merchant->email) {
+            return;
+        }
+
+        $content = translate('You redeemed :amount from card :code. New balance: :balance', [
+            'amount' => single_price($transaction->amount),
+            'code' => $card->code,
+            'balance' => single_price($card->balance),
+        ]);
+
+        $array['subject'] = translate('TradeVista card redemption confirmed');
+        $array['content'] = $content;
+
+        try {
+            \Mail::to($merchant->email)->queue(new MailManager($array));
+        } catch (\Exception $e) {
+        }
     }
 }

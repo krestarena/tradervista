@@ -85,7 +85,7 @@
                         <td class="text-right pr-0 fs-14 pt-0 pb-2 text-dark border-top-0">{{ single_price($shipping) }}</td>
                     </tr>
                     @endif
-                    @if (config('tradevista.voucher_wallet_enabled') && ($voucher_deduction ?? 0) > 0)
+                    @if (\App\Support\TradeVistaSettings::bool('voucher_wallet_enabled') && ($voucher_deduction ?? 0) > 0)
                         <tr>
                             <th class="pl-0 fs-14 fw-400 pt-0 pb-2 text-dark border-top-0">{{ translate('Voucher Applied') }}</th>
                             <td class="text-right pr-0 fs-14 pt-0 pb-2 text-success border-top-0">- {{ single_price($voucher_deduction) }}</td>
@@ -114,7 +114,7 @@
                         if ($coupon_discount > 0) {
                             $total -= $coupon_discount;
                         }
-                        if (config('tradevista.voucher_wallet_enabled') && ($voucher_deduction ?? 0) > 0) {
+                        if (\App\Support\TradeVistaSettings::bool('voucher_wallet_enabled') && ($voucher_deduction ?? 0) > 0) {
                             $total -= $voucher_deduction;
                         }
                     @endphp
