@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\PreventDemoModeChanges;
 use App;
+use Carbon\Carbon;
 
 class Category extends Model
 {
@@ -84,7 +85,7 @@ class Category extends Model
         return $this->belongsTo(SizeChart::class, 'id', 'category_id');
     }
 
-   public function sellerDiscount()
+    public function sellerDiscount()
     {
         return $this->hasOne(SellerCategory::class)->where('seller_id', auth()->id());
     }
@@ -94,4 +95,21 @@ class Category extends Model
         return $this->hasMany(SellerCategory::class);
     }
 
+    public function commissionPlans()
+    {
+        return $this->belongsToMany(CommissionPlan::class, 'commission_plan_category');
+    }
+
+    public function activeCommissionPlan(): ?CommissionPlan
+    {
+        $now = Carbon::now();
+
+        return $this->commissionPlans()
+            ->where('status', 'active')
+            ->orderByDesc('starts_at')
+            ->get()
+            ->first(function (CommissionPlan $plan) use ($now) {
+                return $plan->isEffective($now);
+            });
+    }
 }

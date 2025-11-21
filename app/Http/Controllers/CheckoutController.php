@@ -14,6 +14,7 @@ use App\Models\CombinedOrder;
 use App\Models\Country;
 use App\Models\Product;
 use App\Models\User;
+use App\Support\TradeVistaSettings;
 use App\Services\TradeVista\VoucherWalletService;
 use App\Utility\EmailUtility;
 use App\Utility\NotificationUtility;
@@ -124,7 +125,7 @@ class CheckoutController extends Controller
             }
             $total = $subtotal + $tax + $shipping;
 
-            if (auth()->check() && config('tradevista.voucher_wallet_enabled')) {
+            if (auth()->check() && TradeVistaSettings::bool('voucher_wallet_enabled')) {
                 $voucherContext = $this->voucherWalletService->getCheckoutContext($request->user(), $total);
             }
 
@@ -313,7 +314,7 @@ class CheckoutController extends Controller
             // Calculate Commission from seller, Customer Affiliate earning and Customers Club Point
             calculateCommissionAffilationClubPoint($order);
         }
-        if (config('tradevista.voucher_wallet_enabled')) {
+        if (TradeVistaSettings::bool('voucher_wallet_enabled')) {
             $this->voucherWalletService->finalizeForCombinedOrder($combined_order);
         }
         Session::forget('tradevista_own_dispatch');
@@ -337,7 +338,7 @@ class CheckoutController extends Controller
             // Calculate Commission from seller, Customer Affiliate earning and Customers Club Point
             calculateCommissionAffilationClubPoint($order);
         }
-        if (config('tradevista.voucher_wallet_enabled')) {
+        if (TradeVistaSettings::bool('voucher_wallet_enabled')) {
             $this->voucherWalletService->finalizeForCombinedOrder($combined_order);
         }
         Session::forget('tradevista_own_dispatch');
@@ -526,7 +527,7 @@ class CheckoutController extends Controller
             }
             $total = $subtotal + $tax + $shipping;
             $voucherContext = null;
-            if ($authUser && config('tradevista.voucher_wallet_enabled')) {
+            if ($authUser && TradeVistaSettings::bool('voucher_wallet_enabled')) {
                 $voucherContext = $this->voucherWalletService->getCheckoutContext($authUser, $total);
             }
 

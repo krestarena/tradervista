@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\OrderNotification;
 use App\Utility\EmailUtility;
 use App\Services\TradeVista\VoucherWalletService;
+use App\Support\TradeVistaSettings;
 use Carbon\Carbon;
 use Session;
 
@@ -282,9 +283,9 @@ class OrderController extends Controller
                 $isOwnDispatch = (bool) ($ownDispatchSelections[$product->user_id] ?? false);
                 $order->dispatch_mode = $isOwnDispatch ? Order::DISPATCH_OWN : Order::DISPATCH_PLATFORM;
                 if ($order->dispatch_mode === Order::DISPATCH_PLATFORM) {
-                    if (config('tradevista.payment_protection_window_days')) {
+                    if (TradeVistaSettings::int('payment_protection_window_days')) {
                         $order->payment_protection_status = Order::PAYMENT_PROTECTION_ACTIVE;
-                        $order->payment_protection_hold_expires_at = Carbon::now()->addDays((int) config('tradevista.payment_protection_window_days'));
+                        $order->payment_protection_hold_expires_at = Carbon::now()->addDays(TradeVistaSettings::int('payment_protection_window_days'));
                     }
                 } else {
                     $order->payment_protection_status = Order::PAYMENT_PROTECTION_NOT_APPLICABLE;
@@ -334,7 +335,7 @@ class OrderController extends Controller
             $order->save();
         }
 
-        if (auth()->check() && config('tradevista.voucher_wallet_enabled')) {
+        if (auth()->check() && TradeVistaSettings::bool('voucher_wallet_enabled')) {
             app(VoucherWalletService::class)->applyReservationToCombinedOrder($combined_order);
         }
 

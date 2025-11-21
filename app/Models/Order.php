@@ -14,6 +14,7 @@ class Order extends Model
     public const PAYMENT_PROTECTION_ACTIVE = 'active';
     public const PAYMENT_PROTECTION_RELEASED = 'released';
     public const PAYMENT_PROTECTION_NOT_APPLICABLE = 'not_applicable';
+    public const PAYMENT_PROTECTION_PAUSED = 'paused';
 
     protected $casts = [
         'payment_protection_released_at' => 'datetime',

@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Order;
 use App\Services\TradeVista\ReferralRewardService;
+use App\Support\TradeVistaSettings;
 use Carbon\Carbon;
 
 class OrderObserver
@@ -39,7 +40,7 @@ class OrderObserver
         }
 
         if (!$order->payment_protection_hold_expires_at) {
-            $windowDays = (int) config('tradevista.payment_protection_window_days', 5);
+            $windowDays = TradeVistaSettings::int('payment_protection_window_days', 5);
             $order->payment_protection_hold_expires_at = Carbon::now()->addDays(max($windowDays, 0));
             $order->payment_protection_status = Order::PAYMENT_PROTECTION_ACTIVE;
             $order->saveQuietly();

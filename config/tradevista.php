@@ -21,6 +21,14 @@ return [
     'audit_logging_enabled' => env('TRADEVISTA_AUDIT_LOGGING_ENABLED', false),
     'weekly_settlement_enabled' => env('TRADEVISTA_WEEKLY_SETTLEMENT_ENABLED', true),
 
+    'highlight' => [
+        'enabled' => env('TRADEVISTA_HIGHLIGHT_ENABLED', false),
+        'start_at' => env('TRADEVISTA_HIGHLIGHT_START_AT'),
+        'end_at' => env('TRADEVISTA_HIGHLIGHT_END_AT'),
+        'vendors' => env('TRADEVISTA_HIGHLIGHT_VENDORS', ''),
+        'products' => env('TRADEVISTA_HIGHLIGHT_PRODUCTS', ''),
+    ],
+
     'referral' => [
         'buyer_pct' => env('TRADEVISTA_REFERRAL_BUYER_PCT', 10),
         'seller_pct' => env('TRADEVISTA_REFERRAL_SELLER_PCT', 5),
