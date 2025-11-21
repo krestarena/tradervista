@@ -18,6 +18,7 @@ class MerchantPortalController extends Controller
     public function index()
     {
         abort_unless(TradeVistaSettings::bool('voucher_redemption_portal_enabled'), 404);
+        abort_unless(config('tradevista.voucher_redemption_portal_enabled'), 404);
 
         $transactions = TradeVistaCardTransaction::with('card')
             ->where('merchant_id', auth()->id())
@@ -31,6 +32,7 @@ class MerchantPortalController extends Controller
     public function lookup(Request $request)
     {
         abort_unless(TradeVistaSettings::bool('voucher_redemption_portal_enabled'), 404);
+        abort_unless(config('tradevista.voucher_redemption_portal_enabled'), 404);
 
         $request->validate([
             'code' => 'required|string',
@@ -53,6 +55,7 @@ class MerchantPortalController extends Controller
     public function redeem(Request $request)
     {
         abort_unless(TradeVistaSettings::bool('voucher_redemption_portal_enabled'), 404);
+        abort_unless(config('tradevista.voucher_redemption_portal_enabled'), 404);
 
         $data = $request->validate([
             'code' => 'required|string',
@@ -77,6 +80,7 @@ class MerchantPortalController extends Controller
     public function export(Request $request): StreamedResponse
     {
         abort_unless(TradeVistaSettings::bool('voucher_redemption_portal_enabled'), 404);
+        abort_unless(config('tradevista.voucher_redemption_portal_enabled'), 404);
 
         $transactions = TradeVistaCardTransaction::with('card')
             ->where('merchant_id', auth()->id())

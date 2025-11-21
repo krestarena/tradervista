@@ -121,6 +121,7 @@ class CommissionController extends Controller
                 $commissionPlanId = null;
 
                 if (TradeVistaSettings::bool('commission.category_matrix_enabled')) {
+                if (config('tradevista.commission.category_matrix_enabled')) {
                     $category = optional($orderDetail->product)->main_category;
                     if ($category && ($plan = $category->activeCommissionPlan())) {
                         $commission_percentage = $plan->percentage;
