@@ -20,6 +20,17 @@ return [
     'commission_statement_exports_enabled' => env('TRADEVISTA_COMMISSION_STATEMENT_EXPORTS_ENABLED', false),
     'audit_logging_enabled' => env('TRADEVISTA_AUDIT_LOGGING_ENABLED', false),
     'weekly_settlement_enabled' => env('TRADEVISTA_WEEKLY_SETTLEMENT_ENABLED', true),
+    'seller_promotions_enabled' => env('TRADEVISTA_SELLER_PROMOTIONS_ENABLED', false),
+    'seller_promotions_default_window_days' => env('TRADEVISTA_SELLER_PROMOTION_DEFAULT_DAYS', 7),
+    'seller_promotions_max_discount_pct' => env('TRADEVISTA_SELLER_PROMOTION_MAX_DISCOUNT_PCT', 40),
+
+    'highlight' => [
+        'enabled' => env('TRADEVISTA_HIGHLIGHT_ENABLED', false),
+        'start_at' => env('TRADEVISTA_HIGHLIGHT_START_AT'),
+        'end_at' => env('TRADEVISTA_HIGHLIGHT_END_AT'),
+        'vendors' => env('TRADEVISTA_HIGHLIGHT_VENDORS', ''),
+        'products' => env('TRADEVISTA_HIGHLIGHT_PRODUCTS', ''),
+    ],
 
     'highlight' => [
         'enabled' => env('TRADEVISTA_HIGHLIGHT_ENABLED', false),

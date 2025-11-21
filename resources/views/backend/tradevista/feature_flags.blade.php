@@ -24,6 +24,7 @@
                             'commission_statement_exports_enabled' => translate('Commission statement exports'),
                             'audit_logging_enabled' => translate('Audit logging for admin changes'),
                             'weekly_settlement_enabled' => translate('Weekly settlement policy'),
+                            'seller_promotions_enabled' => translate('Enforce seller promotion windows and caps'),
                         ] as $name => $label)
                             <div class="col-md-6">
                                 <div class="form-group d-flex align-items-center justify-content-between border rounded p-3 mb-3">
@@ -60,6 +61,18 @@
                             <div class="form-group">
                                 <label class="form-label">{{ translate('OTP daily limit') }}</label>
                                 <input type="number" name="otp_daily_limit" class="form-control" min="1" max="20" value="{{ $settings['otp_daily_limit'] }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">{{ translate('Seller promotion default window (days)') }}</label>
+                                <input type="number" name="seller_promotions_default_window_days" class="form-control" min="1" max="60" value="{{ $settings['seller_promotions_default_window_days'] }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">{{ translate('Max seller discount percent') }}</label>
+                                <input type="number" name="seller_promotions_max_discount_pct" class="form-control" min="1" max="90" value="{{ $settings['seller_promotions_max_discount_pct'] }}" required>
                             </div>
                         </div>
                     </div>

@@ -26,6 +26,9 @@ class FeatureFlagController extends Controller
         'commission_statement_exports_enabled' => ['type' => 'boolean'],
         'audit_logging_enabled' => ['type' => 'boolean'],
         'weekly_settlement_enabled' => ['type' => 'boolean'],
+        'seller_promotions_enabled' => ['type' => 'boolean'],
+        'seller_promotions_default_window_days' => ['type' => 'integer', 'rules' => 'required|integer|min:1|max:60'],
+        'seller_promotions_max_discount_pct' => ['type' => 'integer', 'rules' => 'required|integer|min:1|max:90'],
     ];
 
     public function edit()
